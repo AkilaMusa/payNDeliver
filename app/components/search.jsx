@@ -1,11 +1,11 @@
 const SearchBar = () => {
   return (
-    <div className="max-w-md mx-auto border-2 border-gray-700 rounded-md mb-8">
+    <div className="max-w-md mx-auto border border-gray-700 rounded-md ">
       <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
-        <div className="grid place-items-center h-full w-12 text-gray-300">
+        <div className=" bg-gray-50 grid place-items-center h-full w-12 text-gray-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-6  w-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -20,7 +20,7 @@ const SearchBar = () => {
         </div>
 
         <input
-          className="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
+          className="peer h-full w-full bg-gray-50 outline-none text-sm text-gray-700 pr-2"
           type="text"
           id="search"
           placeholder="Search something.."

@@ -8,8 +8,8 @@ const Cart = ({ image, name, dsc, price }) => {
   const stock = 5;
   return (
     <>
-      <div className="m-1 ">
-        <div className="relative flex flex-row p-2  bg-white rounded-lg shadow md:flex-row">
+      <div className="m-1  ">
+        <div className="relative flex flex-row p-2   bg-white rounded-lg shadow md:flex-row">
           <input type="checkbox" className="absolute top-2 right-2 z-10" />
 
           <div className="flex flex-row justify-center items-center w-full">
@@ -26,26 +26,28 @@ const Cart = ({ image, name, dsc, price }) => {
             <div className="flex justify-between w-full mx-2">
               <div className="w-full">
                 <p className="text-">Cappuchino</p>
-                <p className="text-sm"> strawberrys</p>
-                <h4 className="font-bold">$200</h4>
+                <p className="text-sm text-gray-400"> strawberrys</p>
+                <p className="text-sm font-semibold text-green-800">$200</p>
               </div>
               <div className="btns flex w-full justify-end items-center pr-6">
                 <button
                   onClick={() =>
                     setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : 1))
                   }
-                  className="bg-gray-100 px-1 flex items-center rounded-md"
+                  className="bg-gray-50 px-1 text-gray-500 flex items-center rounded-md"
                 >
                   <RemoveIcon />
                 </button>
-                <span className="px-2 cursor-pointer">{count}</span>
+                <span className="px-2 cursor-pointer text-gray-400">
+                  {count}
+                </span>
                 <button
                   onClick={() =>
                     setCount((prevCount) =>
                       prevCount < stock ? prevCount + 1 : stock
                     )
                   }
-                  className="bg-gray-100 rounded-md flex items-center px-1"
+                  className="bg-gray-50 text-gray-500 rounded-md flex items-center px-1"
                 >
                   <Add />
                 </button>

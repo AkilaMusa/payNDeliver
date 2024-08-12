@@ -1,21 +1,34 @@
 import Image from "next/image";
-
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import SearchBar from "./search";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 const Header = () => {
   return (
-    <div className="flex mb-5 w-full justify-between items-center italic bg-white p-4 rounded-lg shadow-md">
-      <span className="text-lg font-semibold text-gray-800">
-        Akila & <br /> The bee
-      </span>
-      <div className="w-10 h-10 rounded-full overflow-hidden">
-        <Image
-          src="/images/profile/profile.jpg"
-          alt="User avatar"
-          width={40}
-          height={40}
-          className="object-cover"
-        />
+    <header className=" mb-8  text-black py-2 shadow-sm">
+      <div className="container mx-auto flex items-center justify-between">
+        {/* Logo */}
+        <div className="flex items-center">
+          <img src="/images/logo/delivery.jpg" alt="Logo" className="h-10" />
+        </div>
+
+        {/* Icons */}
+        <div className="flex items-center space-x-6">
+          <div className=" mx-4">
+            <SearchBar />
+          </div>
+
+          {/* Cart Icon */}
+          <button className="relative">
+            <ShoppingCartOutlinedIcon />
+          </button>
+
+          {/* User Icon */}
+          <button>
+            <AccountCircleOutlinedIcon />
+          </button>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
