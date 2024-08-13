@@ -102,11 +102,8 @@ const Restaurant = () => {
 
         {/* Second div: cart */}
         <div className="hidden lg:block lg:w-2/4 border p-3 pt-5 justify-center">
-          <div className="mb-4 ">
-            <Cart />
-          </div>{" "}
-          {/* <Cart />
-          <Cart /> */}
+          <div className="mb-4 ">{/* <Cart /> */}</div> {/* {/* <Cart /> */}
+          <Cart />
           {/* <CartEmpty /> */}
         </div>
       </div>
