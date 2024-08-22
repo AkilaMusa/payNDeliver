@@ -1,77 +1,97 @@
-import Image from "next/image";
-import { Star } from "@mui/icons-material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+"use client";
+import { useState } from "react";
+import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
+import Link from "next/link";
+import { useCart } from "../contex/cartcontex";
+const FoodDetailsModal = ({
+  title,
+  price,
+  onClose,
+  dsc,
+  image,
+  addToCart,
+  id,
+}) => {
+  const [quantity, setQuantity] = useState(1);
+  // const { addToCart } = useCart();
+  console.log(quantity);
 
-const Details = () => {
+  const increaseQuantity = () => setQuantity((prev) => prev + 1);
+  const decreaseQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
+
   return (
-    <>
-      <div className="flex h-auto md:justify-center md:items-center md:min-h-screen md:bg-gray-100 md:p-4">
-        <div className="max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-5xl rounded overflow-hidden shadow-lg bg-white">
-          <div className="md:flex">
-            <div className="md:w-1/2 p-2 md:p-4">
-              <img
-                src="/images/coffe.jpg"
-                alt="Image Description"
-                className="w-full h-1/2 md:h-full object-cover rounded-2xl"
-              />
-            </div>
-
-            <div className="md:w-1/2 p-2 md:p-6">
-              <div className="hd flex justify-between items-center">
-                <div className="font-bold text-xl md:text-3xl">Cappuccino</div>
-                <div className="icon">
-                  <FavoriteIcon className="text-red-600" />
-                </div>
-              </div>
-              <div className="flex items-center py-1 md:py-2">
-                <p className="text-base md:text-lg">Lorem, ipsum dolor</p>
-                <span className="px-2 flex items-center">
-                  <Star fontSize="15px" className="text-yellow-600" />
-                  <span className="px-1">4.5</span>
-                </span>
-              </div>
-              <div className="pb-5">
-                <p className="py-2 md:leading-relaxed">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Pariatur cupiditate debitis a voluptates facilis!
-                </p>
-              </div>
-
-              <div className="pb-8">
-                <p className="pb-2 md:font-semibold md:text-lg">
-                  Choice of milk
-                </p>
-                <div className="flex flex-wrap justify-between md:-mx-2">
-                  {["Oat Milk", "Soy Milk", "Almond Milk"].map((milk) => (
-                    <span
-                      key={milk}
-                      className="flex-1 md:w-full md:flex-grow md:px-2 mb-2 mr-2"
-                    >
-                      <button className="w-full border-2 hover:bg-black hover:text-white border-black rounded-lg text-center py-3 text-sm md:text-base transition duration-300 ease-in-out">
-                        {milk}
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="price flex-col">
-                  <p>Price</p>
-                  <h1 className="text-xl md:text-3xl font-bold">$200</h1>
-                </div>
-                <div className="btn w-3/4 bg-black text-white hover:bg-white hover:text-black hover:border-2 border-black rounded-xl md:px-8">
-                  <button className="w-full py-4 md:py-3 rounded-xl md:font-semibold transition duration-300 ease-in-out">
-                    BUY NOW
-                  </button>
-                </div>
-              </div>
-            </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+        <div className="relative h-64">
+          <img src={image} alt={title} className="w-full h-full object-cover" />
+          <div className="rounded-full" onClick={onClose}>
+            <button
+              onClick={onClose}
+              className="absolute top-2 right-2 text-white bg-black bg-opacity-50 rounded-full p-1 hover:bg-opacity-75 transition-all"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
         </div>
+
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-2 ">{title}</h2>
+          <p className=" text-gray-600 mb-6">{dsc}</p>
+
+          <p className="text-xl text-green-600 font-semibold mb-6">${price}</p>
+
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-lg font-medium">Quantity:</span>
+            <div className="flex items-center">
+              <button
+                onClick={decreaseQuantity}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <RemoveCircleOutline />
+              </button>
+              <span className="mx-4 text-xl font-semibold">{quantity}</span>
+              <button
+                onClick={increaseQuantity}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <AddCircleOutline />
+              </button>
+            </div>
+          </div>
+          {/* <Link href={"/checkout"}> */}
+          <button
+            onClick={() =>
+              addToCart({
+                title,
+                price,
+                dsc,
+                image,
+                id,
+                quantity,
+              })
+            }
+            className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-green-600 transition-colors"
+          >
+            Place Order - ${(price * quantity).toFixed(2)}
+          </button>
+          {/* </Link> */}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
-export default Details;
+export default FoodDetailsModal;

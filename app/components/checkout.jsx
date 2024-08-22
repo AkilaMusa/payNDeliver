@@ -143,7 +143,7 @@ const CheckoutPage = () => {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded mt-6 hover:bg-blue-700 transition-colors"
+              className="w-full bg-green-600 text-white py-2 rounded mt-6 hover:bg-green-700 transition-colors"
               onClick={() => setIsModalOpen(true)}
               //   className="bg-blue-600 text-white py-2 px-4 rounded"
             >

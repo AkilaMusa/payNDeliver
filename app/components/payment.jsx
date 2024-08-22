@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import CurrencyBitcoinOutlinedIcon from "@mui/icons-material/CurrencyBitcoinOutlined";
 const PaymentModal = ({ isOpen, onClose }) => {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [cardInfo, setCardInfo] = useState({
@@ -54,7 +55,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
                 </h2>
                 <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-4">
                   <button
-                    className={`w-full border sm:w-1/2 px-4 py-2 rounded ${
+                    className={`w-full flex items-center justify-center border sm:w-1/2 px-4 py-2 rounded ${
                       paymentMethod === "card"
                         ? "border-green-600 text-green-700"
                         : "border-gray-400"
@@ -62,9 +63,10 @@ const PaymentModal = ({ isOpen, onClose }) => {
                     onClick={() => setPaymentMethod("card")}
                   >
                     Credit/Debit Card
+                    <CreditCardOutlinedIcon className="ms-1" />
                   </button>
                   <button
-                    className={`w-full sm:w-1/2 px-4 py-2 rounded border ${
+                    className={`w-full sm:w-1/2 px-4 flex items-center justify-center py-2 rounded border ${
                       paymentMethod === "crypto"
                         ? "border-green-600 text-green-700"
                         : "border-gray-400"
@@ -72,6 +74,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
                     onClick={() => setPaymentMethod("crypto")}
                   >
                     Cryptocurrency
+                    <CurrencyBitcoinOutlinedIcon className="ms-1" />
                   </button>
                 </div>
 
@@ -143,7 +146,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
                   )}
                   <button
                     type="submit"
-                    className="w-full bg-green-600 text-white py-2 rounded mt-6 hover:bg-green-700 transition-colors"
+                    className="w-full  bg-green-600 text-white py-2 rounded mt-6 hover:bg-green-700 transition-colors"
                   >
                     Pay Now
                   </button>

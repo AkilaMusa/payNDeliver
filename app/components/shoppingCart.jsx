@@ -1,50 +1,35 @@
 "use client";
+import ClearOutlinedIcon from "@mui/icons-material/ClearOutlined";
 import { useState } from "react";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-const CartItem = ({
-  id,
-  name,
-  price,
-  image,
-  quantity,
-  updateQuantity,
-  removeItem,
-}) => {
+const CartItem = ({ id, price, image, quantity, dsc, title, removeItem }) => {
   return (
-    <div className="flex h-30 mb-6 border rounded-md flex-row sm:flex-row justify-between w-full p-2 shadow-md">
-      <div className="flex h-28   sm:mb-0">
-        <img
-          src={image}
-          alt={name}
-          className=" h-full rounded-md object-cover mr-1 lg:mr-4 "
-        />
+    <div className="flex px-2 py-6 border-b">
+      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+        <img src={image} className="h-full w-full object-cover object-center" />
+      </div>
 
-        <div className="flex-col flex justify-between ">
-          <div className="title">
-            <h3 className="font-semibold">{name}</h3>
+      <div className="ml-4 flex flex-1 flex-col">
+        <div>
+          <div className="flex justify-between text-base font-medium text-gray-900">
+            <h3>{title}</h3>
+            <p className="ml-4">${price}</p>
           </div>
-          <div className="btn w-full items-center  flex">
+          {/* <p className="mt-1 text-sm text-gray-500">{dsc}</p> */}
+        </div>
+        <div className="flex flex-1 items-end justify-between text-sm">
+          <p className="text-gray-500">Qty {quantity}</p>
+
+          <div className="flex">
             <button
-              onClick={() => updateQuantity(id, quantity - 1)}
-              className="px-2  py-1 bg-gray-200 rounded"
+              onClick={() => removeItem(id)}
+              type="button"
+              className="font-medium text-red-600 hover:text-red-500"
             >
-              -
-            </button>
-            <span className="mx-2">{quantity}</span>
-            <button
-              onClick={() => updateQuantity(id, quantity + 1)}
-              className="px-2 py-1 bg-gray-200 rounded"
-            >
-              +
+              Remove
             </button>
           </div>
         </div>
-      </div>
-      <div className=" flex-col flex justify-between">
-        <p className="font-semibold">${price.toFixed(2)}</p>
-        <button onClick={() => removeItem(id)} className="ml-4 text-red-700">
-          <DeleteOutlinedIcon />
-        </button>
       </div>
     </div>
   );

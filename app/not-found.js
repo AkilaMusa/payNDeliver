@@ -1,8 +1,5 @@
 import Link from "next/link";
 export default function ErrorPage() {
-  // const error = useRouteError();
-  // console.error(error);
-
   return (
     <>
       <div className="flex items-center justify-center h-screen">

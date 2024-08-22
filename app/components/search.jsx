@@ -1,6 +1,6 @@
 const SearchBar = () => {
   return (
-    <div className="max-w-md mx-auto border border-gray-700 rounded-md ">
+    <div className=" mx-auto border border-gray-700 rounded-md ">
       <div className="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-white overflow-hidden">
         <div className=" bg-gray-50 grid place-items-center h-full w-12 text-gray-300">
           <svg
