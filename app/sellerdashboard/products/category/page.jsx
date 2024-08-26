@@ -1,12 +1,15 @@
 "use client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import { useState } from "react";
 import Image from "next/image";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
 import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
-const foodCategories = [
+import AddCategory from "./addcategory";
+import { Typography, TextField, Button, Chip, IconButton, Tooltip } from "@mui/material";
+
+export const foodCategories = [
   {
     id: 1,
     name: "Appetizers",
@@ -72,7 +75,7 @@ const foodCategories = [
 export default function DataTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [tableRows, setTableRows] = useState(foodCategories);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = (id) => {
     setTableRows((prevRows) => prevRows.filter((row) => row.id !== id));
@@ -84,99 +87,125 @@ export default function DataTable() {
 
   const columns = [
     {
-      field: "delete",
-      headerName: "Delete",
+      field: "actions",
+      headerName: "Actions",
       sortable: false,
       width: 120,
       renderCell: (params) => (
-        <DeleteIcon
-          className="text-red-700"
-          onClick={() => handleDelete(params.row.id)}
-        />
+        <div>
+          {/* <Tooltip title="Edit">
+            <IconButton size="small">
+              <EditIcon />
+            </IconButton>
+          </Tooltip> */}
+          <Tooltip title="Delete">
+            <IconButton size="small" className="" onClick={() => handleDelete(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       ),
     },
-    { field: "id", headerName: "ID", width: 120 },
-    { field: "name", headerName: "Category", width: 200 },
-    { field: "amountOfFoods", headerName: "Amount", width: 200 },
+    { field: "id", headerName: "ID", width: 70 },
+    { 
+      field: "name", 
+      headerName: "Category", 
+      width: 200,
+      renderCell: (params) => (
+        <div className="flex items-center">
+          <Image src={params.row.image} alt={params.row.name} width={30} height={30} className="w-full mr-2" />
+          {params.row.name}
+        </div>
+      )
+    },
+    { 
+      field: "amountOfFoods", 
+      headerName: "Amount", 
+      width: 120,
+      renderCell: (params) => (
+        <Chip label={params.value} color="primary" size="small" />
+      )
+    },
   ];
 
   return (
-    <div className="mt-16 py-4 ">
-      <div className="flex justify-between items-center p-5">
-        <h1 className="text-xl font-semibold">Categories</h1>
-        <button className="bg-green-600 text-white rounded-md hover:shadow-md hover:bg-green-700 p-2 flex items-center">
+    <div className="mt-20 py-4 rounded-lg p-6 shadow-lg bg-white">
+              <h1  className="font-semibold text-gray-800 text-xl mb-2">
+          Categories
+        </h1>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <AddCategory onClose={() => setIsModalOpen(false)} />
+        </div>
+      )}
+
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          {/* <h1>helllo</h1> */}
+        </div>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          startIcon={<Add />}
+          onClick={() => setIsModalOpen(true)}
+          className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-md hover:shadow-lg transition-all duration-300"
+        >
           Add Category
-          <Add />{" "}
-        </button>
-      </div>
-      <div className="flex  items-center justify-between">
-        <div className="">
-          {/* <h1 className="font-semibold text-xl">Categories</h1> */}
-        </div>
-        <div className=" flex items-center">
-          <div
-            className={`  
-      transition-all duration-300 ease-in-out
-      ${
-        isVisible
-          ? "opacity-100 scale-100 translate-x-0"
-          : "opacity-0 scale-95 -translate-x-full"
-      }
-    `}
-          >
-            <div className="p-2 flex items-center">
-              <SearchIcon className="cursor-pointer  text-gray-400" />
-              <input
-                className="border-b border-gray-300 focus:outline-none focus:border-b-2 focus:border-black"
-                onChange={handleSearch}
-                value={searchTerm}
-                type="text"
-                placeholder="Search..."
-              />
-            </div>
-          </div>
-          <div className="mx-2">
-            {isVisible ? (
-              <SearchOffIcon
-                className={`
-                cursor-pointer
-                transition-all duration-300 ease-in-out
-                `}
-                onClick={() => setIsVisible((prev) => !prev)}
-              />
-            ) : (
-              <SearchIcon
-                className={`
-            cursor-pointer
-            transition-all duration-300 ease-in-out
-          `}
-                onClick={() => setIsVisible((prev) => !prev)}
-              />
-            )}
-          </div>
-        </div>
+        </Button>
       </div>
 
-      <DataGrid
-        rows={tableRows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        filterModel={{
-          items: [
-            {
-              field: "name",
-              operator: "contains",
-              value: searchTerm,
+      <div className="mb-4">
+        <TextField
+          fullWidth
+          variant="outlined"
+          size="small"
+          placeholder="Search categories..."
+          value={searchTerm}
+          onChange={handleSearch}
+          InputProps={{
+            startAdornment: <SearchIcon className="text-gray-400 mr-2" />,
+          }}
+        />
+      </div>
+
+      <div className="bg-white rounded-lg overflow-hidden">
+        <DataGrid
+          rows={tableRows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
             },
-          ],
-        }}
-      />
+          }}
+          pageSizeOptions={[5, 10, 25]}
+          checkboxSelection
+          disableRowSelectionOnClick
+          filterModel={{
+            items: [
+              {
+                field: "name",
+                operator: "contains",
+                value: searchTerm,
+              },
+            ],
+          }}
+          className="border-none"
+          sx={{
+            '& .MuiDataGrid-cell:hover': {
+              color: 'primary.main',
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: 'rgba(229, 231, 235, 0.5)',
+              color: 'text.secondary',
+              fontSize: 14,
+            },
+            '& .MuiDataGrid-virtualScroller': {
+              backgroundColor: 'white',
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }

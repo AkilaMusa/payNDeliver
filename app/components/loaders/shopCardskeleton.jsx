@@ -4,10 +4,11 @@ const ShopCardSkeleton = () => {
       <div className=" p-2 rounded-xl">
         <div className="relative  w-full rounded-lg overflow-hidden">
           <div className="flex items-center justify-center h-48 w-full bg-gray-300 animate-pulse">
-            <img
+            <div className="w-14 h-17"></div>
+            {/* <img
               src="/images/imageplaceholder.png"
               className="h-17 w-14 object-cover"
-            />
+            /> */}
           </div>
         </div>
         <div className="w-full mt-3">

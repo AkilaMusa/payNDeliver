@@ -11,9 +11,9 @@ const ShopCard = ({ image, title, deliverytime, rating, categories, id }) => {
           <div className="relative w-full rounded-lg overflow-hidden">
             <div className="relative">
               <img src={image} className="w-full h-48 object-cover" />
-              <div className="absolute top-2 right-2 rounded-full p-1 bg-gray-100">
+              {/* <div className="absolute top-2 right-2 rounded-full p-1 bg-gray-100">
                 <Favorite className="text-red-500 hover:text-red-500 cursor-pointer" />
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="w-full mt-3">

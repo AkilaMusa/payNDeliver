@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined"; // Import the cart icon
 import React, { useState } from "react";
 
 const Header = () => {
@@ -84,11 +85,14 @@ const Header = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   {/* Search icon */}
                 </div>
-                {/* Search inpute */}
+                {/* Search input */}
               </div>
             </div>
           </div>
           <div className="flex items-center lg:hidden">
+            <Link href="/cart" className="text-gray-500 hover:text-gray-700 mr-4"> {/* Cart Icon on small screens */}
+              <ShoppingCartOutlinedIcon />
+            </Link>
             <button
               type="button"
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-500"

@@ -1,67 +1,49 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import SearchBar from "../components/search";
 import ShopCard from "../components/shopCards";
 import { restaurants } from "../data/data";
 import ShopCardSkeleton from "../components/loaders/shopCardskeleton";
+
 const Stores = () => {
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, []);
-  const data = restaurants.map((item) => item);
-  console.log(data);
-  return (
-    <>
-      <div className="flex p-4 flex-wrap ">
-        <div className="w-full mb-5">
-          <div className="py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <h1 className="mb-4 sm:mb-0 self-start">All Restaurants</h1>
-            <div className="w-full sm:w-auto sm:ml-4 lg:w-1/3 xl:w-1/4">
-              <SearchBar />
-            </div>
-          </div>
-        </div>
 
-        {loading ? (
-          <div className="w-full flex flex-wrap">
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
-            <div className="lg:w-1/3 md:w-full w-full mb-4">
-              <ShopCardSkeleton />
-            </div>
+  return (
+    <div className=" min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">All Restaurants</h1>
+          <div className="w-full md:w-1/2 lg:w-1/3">
+            <SearchBar />
           </div>
-        ) : (
-          restaurants.map(({ id, image, name, openingTime, categories }) => (
-            <div className="lg:w-1/3 md:w-full w-full mb-4" key={id}>
-              <ShopCard
-                id={id}
-                image={image}
-                title={name}
-                rating={5}
-                categories={categories}
-                deliverytime={openingTime}
-              />
-            </div>
-          ))
-        )}
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <ShopCardSkeleton key={index} />
+              ))
+            : restaurants.map(({ id, image, name, openingTime, categories }) => (
+                <ShopCard
+                  key={id}
+                  id={id}
+                  image={image}
+                  title={name}
+                  rating={5}
+                  categories={categories}
+                  deliverytime={openingTime}
+                />
+              ))}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

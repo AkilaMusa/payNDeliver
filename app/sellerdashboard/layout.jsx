@@ -27,13 +27,14 @@ const Layout = ({ children }) => {
         />
         <Box
           component="main"
+          // className="bg-gray-100"
           sx={{
             flexGrow: 1,
             px: { xs: 1, md: 2 },
             width: { xs: "100%", md: `calc(100% - ${sideBarWidth}px)` },
           }}
         >
-          {children} {/* Render page content */}
+          {children}
         </Box>
       </Box>
       {/* <Footer />  */}

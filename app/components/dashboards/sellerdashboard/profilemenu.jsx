@@ -10,6 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
+import Link from "next/link";
 
 const ProfileMenu = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -74,23 +75,29 @@ const ProfileMenu = () => {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem>
-          <Avatar /> Profile
+        <Link href={"/sellersdashboard/profile"}>
+        Profile
+        </Link>
+          <Avatar />
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <Avatar /> My account
-        </MenuItem>
+        </MenuItem> */}
         <Divider />
         <MenuItem>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
-          Manage Other Accounts
+          {/* Manage Other Accounts */}
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
+          <Link href={"/sellersdashboard/settings"}>
           Settings
+
+          </Link>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>

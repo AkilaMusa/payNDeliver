@@ -1,6 +1,5 @@
 "use client";
-import { Star } from "@mui/icons-material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { Star, AccessTime, LocalDining, DirectionsCar, Phone, Email, LocationOn } from "@mui/icons-material";
 import ProductCard from "../../../components/productscard";
 import CartEmpty from "../../../components/cartempty";
 import { useEffect, useState } from "react";
@@ -10,6 +9,10 @@ import Productscardskeleton from "../../../components/loaders/productskeleton";
 import { useCart } from "../../../contex/cartcontex";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CartItem from "../../../components/shoppingCart";
+import CartPage from "../../../cart/page";
+import CartContent from "./cartcontent";
+
 const Restaurant = ({ params }) => {
   const { id } = params;
   const [loading, setLoading] = useState(true);
@@ -17,7 +20,6 @@ const Restaurant = ({ params }) => {
   const { addToCart } = useCart();
 
   const restaurant = restaurants.find((food) => parseInt(id) === food.id);
-
   const prod = restaurant.foods.map(({ name, title, image, id, price }) => ({
     name,
     title,
@@ -27,14 +29,12 @@ const Restaurant = ({ params }) => {
   }));
 
   const [data, setData] = useState(prod);
-
   const [det, setDet] = useState({
     title: "",
     price: "",
     dsc: "",
     image: "",
   });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const details = (e) => {
@@ -51,9 +51,7 @@ const Restaurant = ({ params }) => {
 
   const handleDishes = (e) => {
     setCat(e);
-    console.log(cat);
     const dish = restaurant.foods.filter(({ category }) => category === e);
-    console.log(dish);
     if (dish.length === 0) return;
     setData(dish);
   };
@@ -66,22 +64,12 @@ const Restaurant = ({ params }) => {
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    toast.success("added item to cart");
+    toast.success("Added item to cart");
   };
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer position="top-right" autoClose={3000} />
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -97,215 +85,213 @@ const Restaurant = ({ params }) => {
         </div>
       )}
 
-      <div className="container lg:p-2 lg:flex mx-auto max-w-screen-xl h-auto border-2 py-4">
-        {/* First div: background img div */}
-
-        <div className="w-full lg:w-3/4 h-auto p-2">
-          <div className={`w-full h-60 relative `}>
-            <div
-              className={`time absolute bg-gray-50 bottom-2 left-3 w-fit justify-center rounded-md flex items-center space-x-1 p-2 border text-xs border-green-800 text-green-800 ${
-                loading ? "hidden" : "block"
-              }`}
-            >
-              <span>
-                <AccessTimeIcon className="text-sm" />
-              </span>
-              <span>{restaurant.deliveryTime}</span>
-            </div>
-            {loading ? (
-              <div className="flex h-full w-full bg-gray-300 animate-pulse rounded-xl items-center border-2 justify-center">
-                <img
-                  src="/images/imageplaceholder.png"
-                  className="w-14 h-17 object-cover rounded-xl"
-                  alt=""
-                />
-              </div>
-            ) : (
-              <img
-                src={restaurant.image}
-                className="w-full h-full object-cover rounded-xl"
-                alt=""
-              />
-            )}
-          </div>
-
-          <div>
-            {/* title */}
-            <div className="lg:flex  sm:block justify-between">
-              <div
-                className={`flex ${
-                  loading ? "lg:w-1/2" : ""
-                } items-center justify-between`}
-              >
-                {loading ? (
-                  <h1
-                    className={` bg-gray-300 animate-pulse  w-1/2 mt-2  h-3 rounded-md ${
-                      loading ? "lg:w-full" : ""
-                    }`}
-                  ></h1>
-                ) : (
-                  <h1 className="text-2xl">{restaurant.name}</h1>
-                )}{" "}
-                {loading ? (
-                  <span
-                    className={`${
-                      loading ? "lg:hidden" : ""
-                    } px-2 h-2  w-8 animate-pulse bg-gray-300 rounded-md`}
-                  ></span>
-                ) : (
-                  <span className="px-2 text-xs flex justify-center items-center">
-                    {restaurant.rating}
-                    <Star fontSize="13px" className="mx-1 text-yellow-600" />
-                    <span className="text-gray-600">(5)</span>
-                  </span>
-                )}
-                {/* <span className="px-2 text-xs flex justify-center items-center">
-                  {restaurant.rating}
-                  <Star fontSize="13px" className="mx-1 text-yellow-600" />
-                  <span className="text-gray-600">(5)</span>
-                </span> */}
-              </div>
-              <div className="p-1 lg:hidden md:flex md:justify-between">
-                <div className="flex justify-between">
-                  {loading ? (
-                    <p
-                      className={`${
-                        loading ? "lg:w-28" : ""
-                      }  bg-gray-300 mt-2 rounded-md animate-pulse h-2 w-14`}
-                    ></p>
-                  ) : (
-                    <p className="text-green-700">African</p>
-                  )}
-                  {loading ? (
-                    <p className="bg-gray-300 mt-2 rounded-md animate-pulse h-2 w-14"></p>
-                  ) : (
-                    <p className="text-gray-400">{restaurant.deliveryTime}</p>
-                  )}
+      <div className="container mx-auto max-w-screen-xl border p-4">
+        <div className="lg:flex gap-8">
+          <div className="w-full lg:w-3/4">
+            {/* Hero Section */}
+            <div className="relative h-80 mb-6 rounded-xl overflow-hidden shadow-lg">
+              {loading ? (
+                <div className="h-full w-full bg-gray-300 animate-pulse flex items-center justify-center">
+                  <div className="w-20 h-20"></div>
+                  {/* <img src="/images/imageplaceholder.png" className="w-20 h-20 object-cover" alt="" /> */}
                 </div>
+              ) : (
+                <img src={restaurant.image} className="w-full h-full object-cover" alt={restaurant.name} />
+              )}
+              {/* <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-full shadow-md flex items-center space-x-2">
+                <AccessTime className="text-green-600" fontSize="small" />
+                <span className="text-sm font-medium text-green-800">{restaurant.deliveryTime}</span>
+              </div> */}
+            </div>
+
+            {/* Restaurant Info */}
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-4">
+                {loading ? (
+                  <div className="h-8 bg-gray-300 rounded w-1/3 animate-pulse"></div>
+                ) : (
+                  <h1 className="text-3xl font-bold">{restaurant.name}</h1>
+                )}
+                {loading ? (
+                  <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+                ) : (
+                  <div className="flex items-center bg-green-100 px-3 py-1 rounded-full">
+                    <Star className="text-yellow-500 mr-1" fontSize="small" />
+                    <span className="font-medium">{restaurant.rating}</span>
+                    <span className="text-sm text-gray-600 ml-1">(5)</span>
+                  </div>
+                )}
               </div>
-              {/* Delivery btns */}
-              <div className="flex  lg:max-w-[250px] md:w-full mt-4 border border-black p-1 bg-green-50 rounded-md">
-                <button className="p-2 w-full text-white rounded-md bg-green-600 hover:bg-green-700">
-                  Deliver now
+
+              <div className="flex space-x-4 mb-6">
+                <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-full hover:bg-green-700 transition duration-300 flex items-center justify-center">
+                  <LocalDining className="mr-2" /> Deliver now
                 </button>
-                <button className="p-2 w-full px-4 text-green-900 rounded-md hover:bg-green-100">
-                  Pickup
+                <button className="flex-1 border border-green-600 text-green-600 py-2 px-4 rounded-full hover:bg-green-50 transition duration-300 flex items-center justify-center">
+                  <DirectionsCar className="mr-2" /> Pickup
                 </button>
               </div>
 
-              {loading ? (
-                <p className="bg-gray-300 mt-4 lg:hidden rounded-md animate-pulse h-2 w-14"></p>
-              ) : (
-                <p className="text-green-900 pt-3 lg:hidden md:block">
-                  Min Order $0
-                </p>
-              )}
-            </div>
-            <div className="py-5 border-b hidden lg:block">
-              {loading ? (
-                <div className=" ">
-                  <p className="lg:w-1/3 bg-gray-300 mt-2  rounded-md animate-pulse h-2 w-14"></p>
+              <div className="flex justify-between text-sm text-gray-600 mb-6">
+                <div>
+                  <p className="font-semibold text-gray-800">Opening time</p>
+                  <p>{restaurant.openingTime}</p>
                 </div>
-              ) : (
-                <p className="text-green-700">African</p>
-              )}
+                <div>
+                  <p className="font-semibold text-gray-800">Min Order</p>
+                  <p>$0</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-800">Cuisine</p>
+                  <p className="text-green-600">African</p>
+                </div>
+              </div>
             </div>
-            <div className="py-5 hidden lg:flex lg:justify-between">
-              <div>
+
+            {/* Menu Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-4">Our Menu</h2>
+              <div className="flex space-x-2 overflow-x-auto pb-4 mb-6">
+                {loading
+                  ? Array(6).fill().map((_, index) => (
+                      <div key={index} className="h-10 w-20 bg-gray-300 rounded-full animate-pulse flex-shrink-0"></div>
+                    ))
+                  : [
+                      <button
+                        key="all"
+                        onClick={() => { setData(prod); setCat("All"); }}
+                        className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
+                          cat === "All" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                        }`}
+                      >
+                        All
+                      </button>,
+                      ...restaurant.categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => handleDishes(category)}
+                          className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
+                            category === cat ? "bg-green-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      )),
+                    ]}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {loading
+                  ? Array(4).fill().map((_, index) => <Productscardskeleton key={index} />)
+                  : data.map(({ name, title, image, id, price }) => (
+                      <ProductCard
+                        key={id}
+                        id={id}
+                        image={image}
+                        title={name}
+                        dsc={title}
+                        price={price}
+                        onclick={() => details(id)}
+                      />
+                    ))}
+              </div>
+            </div>
+
+            {/* Customer Reviews Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
+              <div className="space-y-4">
                 {loading ? (
-                  <p className="bg-gray-300 mt-2 rounded-md animate-pulse h-2 w-14"></p>
+                  Array(3).fill().map((_, index) => (
+                    <div key={index} className="bg-gray-100 p-4 rounded-lg animate-pulse">
+                      <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+                      <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
+                      <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                  ))
                 ) : (
-                  <p className="font-semibold">Opening time</p>
-                )}
-                {loading ? (
-                  <p className="bg-gray-300 mt-2 rounded-md animate-pulse h-2 w-14"></p>
-                ) : (
-                  <p className="text-gray-400">{restaurant.openingTime}</p>
+                  [
+                    { name: "John D.", rating: 5, comment: "Absolutely delicious! The pizza was perfect and delivery was quick." },
+                    { name: "Sarah M.", rating: 4, comment: "Great food and service. Will order again!" },
+                    { name: "Mike R.", rating: 5, comment: "Best Italian food in town. Highly recommended!" }
+                  ].map((review, index) => (
+                    <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <Star className="text-yellow-500 mr-1" fontSize="small" />
+                        <span className="font-medium">{review.rating}</span>
+                        <span className="text-sm text-gray-600 ml-2">{review.name}</span>
+                      </div>
+                      <p className="text-gray-700">{review.comment}</p>
+                    </div>
+                  ))
                 )}
               </div>
+            </div>
+
+            {/* Opening Hours and Contact Info */}
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                {loading ? (
-                  <p className="bg-gray-300 mt-2 rounded-md animate-pulse h-2 w-14"></p>
-                ) : (
-                  <p className="text-green-900">Min Order $0</p>
-                )}
+                <h2 className="text-2xl font-bold mb-4">Opening Hours</h2>
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  {loading ? (
+                    Array(7).fill().map((_, index) => (
+                      <div key={index} className="flex justify-between mb-2">
+                        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="flex justify-between mb-2">
+                        <span>Monday - Friday:</span>
+                        <span>11:00 AM - 10:00 PM</span>
+                      </div>
+                      <div className="flex justify-between mb-2">
+                        <span>Saturday - Sunday:</span>
+                        <span>12:00 PM - 11:00 PM</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
+                <div className="bg-gray-100 p-4 rounded-lg">
+                  {loading ? (
+                    Array(3).fill().map((_, index) => (
+                      <div key={index} className="flex items-center mb-3">
+                        <div className="h-6 w-6 bg-gray-300 rounded-full mr-3"></div>
+                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      </div>
+                    ))
+                  ) : (
+                    <>
+                      <div className="flex items-center mb-3">
+                        <LocationOn className="text-green-600 mr-3" />
+                        <span>123 Main St, Anytown, USA 12345</span>
+                      </div>
+                      <div className="flex items-center mb-3">
+                        <Phone className="text-green-600 mr-3" />
+                        <span>555-123-4567</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Email className="text-green-600 mr-3" />
+                        <span>info@tastybites.com</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-5 overflow-x-auto p-4 flex items-center md:no-scrollbar border-b mb-5">
-            {loading ? (
-              <div>
-                <span className="bg-gray-300 animate-pulse h-6 w- py-1 px-4 rounded-xl"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-12 py-1 px-8 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-12 py-1 px-4 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-6 py-1 px-12 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-8 py-1 px-8 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-8 py-1 px-4 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-8 py-1 px-8 rounded-xl mx-2"></span>
-                <span className="bg-gray-300 animate-pulse h-6 w-8 py-1 px-4 rounded-xl mx-2"></span>
-              </div>
-            ) : (
-              <>
-                <span
-                  onClick={() => {
-                    setData(prod);
-                    setCat("All");
-                  }}
-                  className={`px-4 py-1 cursor-pointer text-gray-400 ${
-                    cat === "All"
-                      ? "bg-green-50 text-green-900"
-                      : "bg-white text-gray-400"
-                  } rounded-xl`}
-                >
-                  All
-                </span>
-                {restaurant.categories.map((category, index) => (
-                  <span
-                    key={index}
-                    className={`p-3 cursor-pointer ${
-                      category === cat
-                        ? "bg-green-50 text-green-900 rounded-xl"
-                        : "bg-white text-gray-400"
-                    } mx-3`}
-                    onClick={() => handleDishes(category)}
-                  >
-                    {category}
-                  </span>
-                ))}
-              </>
-            )}
-          </div>
-          <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4 lg:p-4">
-            {loading ? (
-              <>
-                <div className="w-100 ">
-                  <Productscardskeleton />
-                </div>
-                <div className="w-100 ">
-                  <Productscardskeleton />
-                </div>
-              </>
-            ) : (
-              data.map(({ name, title, image, id, price }) => (
-                <ProductCard
-                  key={id}
-                  id={id}
-                  image={image}
-                  title={name}
-                  dsc={title}
-                  price={price}
-                  onclick={() => details(id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Second div: cart */}
-        <div className="hidden lg:block lg:w-1/4 border p-3 pt-5 justify-center">
-          <div className="mb-4">
-            <CartEmpty />
+          {/* Cart Section */}
+          <div className="hidden lg:block border lg:w-1/4">
+            <div className="sticky top-4 bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold mb-4">Your Cart</h2>
+              {/* cart items */}
+              <CartContent/>
+            </div>
           </div>
         </div>
       </div>

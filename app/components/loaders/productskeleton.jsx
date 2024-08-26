@@ -11,11 +11,12 @@ const Productscardskeleton = () => {
             <div className="h-2 bg-gray-300 w-8 animate-pulse rounded-md"></div>
           </div>
           <div className=" h-full p-2 w-1/3 min-w-0 animate-pulse flex justify-center items-center bg-gray-300">
-            <img
+          <div className="w-14 h-17"></div>
+            {/* <img
               className="object-cover w-14 h-17 rounded-r-lg"
               src="/images/imageplaceholder.png"
               alt=""
-            />
+            /> */}
           </div>
         </div>
       </div>
