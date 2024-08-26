@@ -7,7 +7,14 @@ import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
 import AddCategory from "./addcategory";
-import { Typography, TextField, Button, Chip, IconButton, Tooltip } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Button,
+  Chip,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 
 export const foodCategories = [
   {
@@ -99,7 +106,11 @@ export default function DataTable() {
             </IconButton>
           </Tooltip> */}
           <Tooltip title="Delete">
-            <IconButton size="small" className="" onClick={() => handleDelete(params.row.id)}>
+            <IconButton
+              size="small"
+              className=""
+              onClick={() => handleDelete(params.row.id)}
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -107,32 +118,36 @@ export default function DataTable() {
       ),
     },
     { field: "id", headerName: "ID", width: 70 },
-    { 
-      field: "name", 
-      headerName: "Category", 
+    {
+      field: "name",
+      headerName: "Category",
       width: 200,
       renderCell: (params) => (
         <div className="flex items-center">
-          <Image src={params.row.image} alt={params.row.name} width={30} height={30} className="w-full mr-2" />
+          <Image
+            src={params.row.image}
+            alt={params.row.name}
+            width={30}
+            height={30}
+            className="w-full mr-2"
+          />
           {params.row.name}
         </div>
-      )
+      ),
     },
-    { 
-      field: "amountOfFoods", 
-      headerName: "Amount", 
+    {
+      field: "amountOfFoods",
+      headerName: "Amount",
       width: 120,
       renderCell: (params) => (
         <Chip label={params.value} color="primary" size="small" />
-      )
+      ),
     },
   ];
 
   return (
     <div className="mt-20 py-4 rounded-lg p-6 shadow-lg bg-white">
-              <h1  className="font-semibold text-gray-800 text-xl mb-2">
-          Categories
-        </h1>
+      <h1 className="font-semibold text-gray-800 text-xl mb-2">Categories</h1>
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
@@ -141,12 +156,10 @@ export default function DataTable() {
       )}
 
       <div className="flex justify-between items-center mb-6">
-        <div>
-          {/* <h1>helllo</h1> */}
-        </div>
-        <Button 
-          variant="contained" 
-          color="primary" 
+        <div>{/* <h1>helllo</h1> */}</div>
+        <Button
+          variant="contained"
+          color="primary"
           startIcon={<Add />}
           onClick={() => setIsModalOpen(true)}
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-md hover:shadow-lg transition-all duration-300"
@@ -192,16 +205,16 @@ export default function DataTable() {
           }}
           className="border-none"
           sx={{
-            '& .MuiDataGrid-cell:hover': {
-              color: 'primary.main',
+            "& .MuiDataGrid-cell:hover": {
+              color: "primary.main",
             },
-            '& .MuiDataGrid-columnHeaders': {
-              backgroundColor: 'rgba(229, 231, 235, 0.5)',
-              color: 'text.secondary',
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: "rgba(229, 231, 235, 0.5)",
+              color: "text.secondary",
               fontSize: 14,
             },
-            '& .MuiDataGrid-virtualScroller': {
-              backgroundColor: 'white',
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: "white",
             },
           }}
         />
