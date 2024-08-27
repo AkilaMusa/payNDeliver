@@ -1,16 +1,17 @@
-"use client";
+"use client"
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "./loaders/spinner";
+import { FaGoogle } from "react-icons/fa";
 
 const LoginPopup = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -22,31 +23,75 @@ const LoginPopup = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!credentials.email || !credentials.password) {
+      setError("Please fill in all required fields");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
+  // const handleSignIn = async () => {
+  //   if (!validateForm()) return;
+
+  //   try {
+  //     const { email, password } = credentials;
+  //     setLoading(true);
+  //     const login = await signIn("credentials", {
+  //       email:email,
+  //       password:password,
+  //       redirect: false,
+  //     });
+
+  //     if (login.error) {
+  //       setLoading(false);
+  //       if (login.error === "CredentialsSignin") {
+  //         setError(login.error)
+  //       } else {
+  //         setError("Something went wrong");
+  //       }
+  //       console.log("error from", login.error);
+  //       setError(login.error);
+
+  //     } else {
+  //       setLoading(false);
+  //       router.push("/sess");
+  //     }
+  //   } catch (e) {
+  //     setError(e.message);
+  //     console.log(e.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleSignIn = async () => {
+    if (!validateForm()) return;
+      setLoading(true);
+    setError(null); 
     try {
       const { email, password } = credentials;
-      setLoading(true);
       const login = await signIn("credentials", {
         email,
         password,
         redirect: false,
       });
-
-      if (login.error) {
-        setLoading(false);
-        if (login.error === "CredentialsSignin") {
-          setError("Invalid email or password. Please try again.");
-        } else {
-          setError("An unexpected error occurred. Please try again later.");
-        }
-        console.log("error:", login.error);
+  
+      if (login?.error) {
+        setError(login.error === "CredentialsSignin" 
+          ? "Invalid email or password" 
+          : "An unexpected error occurred. Please try again.");
+        console.error("Login error:", login.error);
       } else {
-        setLoading(false);
         router.push("/sess");
       }
     } catch (e) {
-      setError(e.message);
-      console.log(e.message);
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Sign-in error:", e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,50 +105,42 @@ const LoginPopup = () => {
                 className="flex flex-col gap-4 pb-4"
                 onSubmit={(e) => e.preventDefault()}
               >
-                <h1 className="mb-4 text-2xl font-bold dark:text-white">
-                  Login
+                <h1 className="text-2xl font-extrabold text-gray-600 text-center mb-6">
+                  Sign in
                 </h1>
+
                 <div>
-                  <div className="mb-2">
-                    <label className="text-sm font-medium " htmlFor="email">
-                      Email:
-                    </label>
-                  </div>
+                  <div className="mb-2"></div>
                   <div className="flex w-full rounded-lg pt-1">
                     <div className="relative w-full">
                       <input
                         value={credentials.email}
                         onChange={handleInputChange}
-                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50 border-gray-300 focus:border-cyan-500 focus:ring-cyan-500 dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-sm"
                         id="email"
                         type="email"
                         name="email"
-                        placeholder="email@example.com"
-                        required
+                        placeholder="Email"
                       />
                     </div>
                   </div>
                 </div>
                 <div>
-                  <div className="mb-2">
-                    <label className="text-sm font-medium" htmlFor="password">
-                      Password
-                    </label>
-                  </div>
+                  <div className="mb-2"></div>
                   <div className="flex w-full rounded-lg pt-1">
                     <div className="relative w-full">
                       <input
                         value={credentials.password}
                         onChange={handleInputChange}
-                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50  focus:border-cyan-500 focus:ring-cyan-500 dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-lg"
+                        placeholder="Password"
+                        className="block w-full border disabled:cursor-not-allowed disabled:opacity-50 bg-gray-50  focus:border-cyan-500 focus:ring-cyan-500 dark:placeholder-gray-400 dark:focus:border-cyan-500 dark:focus:ring-cyan-500 p-2.5 text-sm rounded-sm"
                         id="password"
                         type="password"
                         name="password"
-                        required
                       />
                     </div>
                   </div>
-                  <p className="text-red-500">{error}</p>
+                  {error && <p className="text-red-500 mt-2">{error}</p>}
 
                   <p className="mt-2 cursor-pointer text-blue-500 hover:text-blue-600">
                     Forgot password?
@@ -114,7 +151,7 @@ const LoginPopup = () => {
                     onClick={handleSignIn}
                     disabled={loading}
                     type="submit"
-                    className={`w-full flex items-center justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                    className={`w-full flex items-center justify-center py-2 px-4 border bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-md hover:from-purple-600 hover:to-pink-500 text-white font-bold py-2 px-4 rounded transition duration-300 ${
                       loading
                         ? "opacity-80 cursor-not-allowed hover:bg-blue-600"
                         : ""
@@ -123,7 +160,6 @@ const LoginPopup = () => {
                     {loading ? (
                       <span className="inline-flex items-center space-x-2">
                         <div className="flex items-center justify-center pb-4">
-                          {/* <span className="mx-4">Signing in...</span> */}
                           <Spinner />
                         </div>
                       </span>
@@ -131,40 +167,40 @@ const LoginPopup = () => {
                       "Sign in"
                     )}
                   </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      signIn("google", { callbackUrl: "/dashboard" })
-                    }
-                    className="transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed bg-white hover:bg-gray-100  border border-gray-200  rounded-lg"
-                  >
-                    <span className="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base">
-                      {/* <GoogleIcon /> */}
-                      Sign in with Google
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    className="transition-colors focus:ring-2 p-0.5 disabled:cursor-not-allowed bg-white hover:bg-gray-100 border border-gray-200  rounded-lg"
-                  >
-                    {/* <span className="flex items-center justify-center gap-1 font-medium py-1 px-2.5 text-base">
-                      <FacebookIcon />
-                      Sign in with Facebook
-                    </span> */}
-                  </button>
                 </div>
               </form>
-              <div className="min-w-[270px]">
-                <div className="mt-4 text-center">
-                  New user?
-                  <Link
-                    className="text-blue-500 underline hover:text-blue-600"
-                    href="/signup"
-                  >
-                    Create account here
-                  </Link>
+
+              <div className="min-w-[270px] mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">
+                      Or continue with
+                    </span>
+                  </div>
                 </div>
+
+                <div className="mt-6 grid grid-cols-1 gap-3">
+                  <button
+                    onClick={() => signIn("google", { callbackUrl: "/sess" })}
+                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-gradient-to-r from-gray-100 to-gray-200 text-sm font-medium text-gray-500 hover:from-gray-200 hover:to-gray-300 transition duration-150 ease-in-out"
+                  >
+                    <FaGoogle className="w-5 h-5 mr-2" />
+                    Sign in with Google
+                  </button>
+                </div>
+              </div>
+
+              <div className="min-w-[270px] mt-4 text-center">
+                New user?
+                <Link
+                  className="mx-1 text-blue-500 underline hover:text-blue-600"
+                  href="/signup"
+                >
+                  Create account here
+                </Link>
               </div>
             </div>
           </div>

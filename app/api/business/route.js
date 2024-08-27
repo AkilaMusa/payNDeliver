@@ -21,7 +21,7 @@ export const POST = async(req) => {
         
         const { name, description, address, phone, email, cuisineType, openingHours } = await req.json();
         console.log('Received data:', { name, description, address, phone, email, cuisineType, openingHours })
-        
+        console.log("userID:" , session.user.id)
         const newBusiness = await businessmodel.create({
             ownerId: session.user.id,
             name,

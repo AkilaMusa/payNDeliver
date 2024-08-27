@@ -29,8 +29,8 @@ export const authOptions = {
             throw new Error("User not found")
           }
         } catch (e) {
-          console.log(e.message)
-          throw new Error(e.message)
+          console.error("Authentication error:", e);
+          throw e; 
         }
       }
     })

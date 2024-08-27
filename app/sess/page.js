@@ -4,6 +4,7 @@ const stuff = () => {
     const { data: session } = useSession();
     if(session){
       console.log(session.user.id)
+      console.log(session)
   
     }
     return (  
