@@ -174,7 +174,7 @@ export default function LandingPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <img src="/api/placeholder/600/400" alt="Delivery illustration" className="rounded-lg shadow-xl" />
+              <img src="https://cdn.dribbble.com/users/2698916/screenshots/13934288/delivery_concept_illustration._delivery_by_scooter_concept_illustration-01_4x.jpg" alt="Delivery illustration" className="rounded-lg shadow-xl" />
             </motion.div>
           </div>
         </div>
