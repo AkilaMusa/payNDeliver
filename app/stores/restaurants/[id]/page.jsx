@@ -22,20 +22,11 @@ import CartContent from "./cartcontent";
 
 const Restaurant = ({ params }) => {
   const { id } = params;
-  const [profile, setprofile] = useState({
-    address: "",
-    cuisineType: "",
-    email: "",
-    image: "",
-    name: "",
-    openingHours: "",
-    phone: "",
-    description: "",
-  });
-  const [loading, setLoading] = useState(true);
+  const [profile, setprofile] = useState("");
+  const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState("All");
   const { addToCart } = useCart();
-
+const [products,setProducts] =useState("")
   // const restaurant = restaurants.find((food) => parseInt(id) === food.id);
   // const prod = restaurants.foods.map(({ name, title, image, id, price }) => ({
   //   name,
@@ -45,25 +36,52 @@ const Restaurant = ({ params }) => {
   //   price,
   // }));
 
+  // const [data, setData] = useState(prod);
   useEffect(() => {
-    const fetchbusiness = async () => {
-      const abortcontroller = new AbortController();
+    const abortController = new AbortController();
+    const { signal } = abortController;
+  
+    const fetchBusinessAndProducts = async () => {
       try {
         setLoading(true);
-        const request = await fetch("/api/business", { signal });
-        if (!request.ok) {
-          throw new Error("error fetcing busines profile");
+        
+        // Fetch business data
+        const businessResponse = await fetch(`/api/business/${id}`, { signal });
+        if (!businessResponse.ok) {
+          throw new Error("Error fetching business profile");
         }
-        const data = await request.json();
+        const businessData = await businessResponse.json();
+        console.log("business",businessData);
+        setprofile(businessData.data);
+  
+        // Fetch products data
+        if (businessData.data?._id) {
+          const productsResponse = await fetch(`/api/products/${businessData.data._id}`, { signal });
+          if (!productsResponse.ok) {
+            throw new Error("Error fetching products");
+          }
+          const productsData = await productsResponse.json();
+          console.log("products:",productsData);
+          // Assuming you have a state setter for products, e.g., setProducts
+          setProducts(productsData.data);
+        }
       } catch (err) {
-        console.log(err);
+        if (err.name === 'AbortError') {
+          console.log('Fetch aborted');
+        } else {
+          console.error(err);
+        }
+      } finally {
+        setLoading(false);
       }
     };
-    fetchbusiness();
-    return () => abortcontroller.abort;
-  }, []);
+  
+    fetchBusinessAndProducts();
+  
+    return () => abortController.abort();
+  }, [id]);
 
-  const [data, setData] = useState(prod);
+
   const [det, setDet] = useState({
     title: "",
     price: "",
@@ -73,12 +91,12 @@ const Restaurant = ({ params }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const details = (e) => {
-    const m = restaurant.foods.find((food) => e === food.id);
+    const m = products && products?.find((prod) => e === prod._id);
     setDet({
-      id: m.id,
+      id: m._id,
       title: m.name,
       image: m.image,
-      dsc: m.title,
+      dsc: m.description,
       price: m.price,
     });
     setIsModalOpen(true);
@@ -86,7 +104,7 @@ const Restaurant = ({ params }) => {
 
   const handleDishes = (e) => {
     setCat(e);
-    const dish = restaurant.foods.filter(({ category }) => category === e);
+    const dish = profile.cuisineType.filter((Cuisine) => Cuisine === e);
     if (dish.length === 0) return;
     setData(dish);
   };
@@ -126,9 +144,9 @@ const Restaurant = ({ params }) => {
                 </div>
               ) : (
                 <img
-                  src={restaurant.image}
+                  src={profile?.image}
                   className="w-full h-full object-cover"
-                  alt={restaurant.name}
+                  alt={profile?.name}
                 />
               )}
               {/* <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-full shadow-md flex items-center space-x-2">
@@ -143,14 +161,14 @@ const Restaurant = ({ params }) => {
                 {loading ? (
                   <div className="h-8 bg-gray-300 rounded w-1/3 animate-pulse"></div>
                 ) : (
-                  <h1 className="text-3xl font-bold">{restaurant.name}</h1>
+                  <h1 className="text-3xl font-bold">{profile?.name}</h1>
                 )}
                 {loading ? (
                   <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
                 ) : (
                   <div className="flex items-center bg-green-100 px-3 py-1 rounded-full">
                     <Star className="text-yellow-500 mr-1" fontSize="small" />
-                    <span className="font-medium">{restaurant.rating}</span>
+                    <span className="font-medium">{4.5}</span>
                     <span className="text-sm text-gray-600 ml-1">(5)</span>
                   </div>
                 )}
@@ -168,7 +186,7 @@ const Restaurant = ({ params }) => {
               <div className="flex justify-between text-sm text-gray-600 mb-6">
                 <div>
                   <p className="font-semibold text-gray-800">Opening time</p>
-                  <p>{restaurant.openingTime}</p>
+                  <p>{"9:00am-12:00am"}</p>
                 </div>
                 <div>
                   <p className="font-semibold text-gray-800">Min Order</p>
@@ -198,7 +216,7 @@ const Restaurant = ({ params }) => {
                       <button
                         key="all"
                         onClick={() => {
-                          setData(prod);
+                          // setData(prod);
                           setCat("All");
                         }}
                         className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
@@ -209,17 +227,17 @@ const Restaurant = ({ params }) => {
                       >
                         All
                       </button>,
-                      ...restaurant.categories.map((category) => (
+                      profile?.cuisineType?.map((item) => (
                         <button
-                          key={category}
-                          onClick={() => handleDishes(category)}
+                          key={item}
+                          onClick={() => handleDishes(item)}
                           className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
-                            category === cat
+                            item === cat
                               ? "bg-green-600 text-white"
                               : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                           }`}
                         >
-                          {category}
+                          {item}
                         </button>
                       )),
                     ]}
@@ -230,15 +248,15 @@ const Restaurant = ({ params }) => {
                   ? Array(4)
                       .fill()
                       .map((_, index) => <Productscardskeleton key={index} />)
-                  : data.map(({ name, title, image, id, price }) => (
+                  : products && products?.map(({ name,description, image, _id, price }) => (
                       <ProductCard
-                        key={id}
-                        id={id}
+                        key={_id}
+                        id={_id}
                         image={image}
                         title={name}
-                        dsc={title}
+                        dsc={description}
                         price={price}
-                        onclick={() => details(id)}
+                        onclick={() => details(_id)}
                       />
                     ))}
               </div>
@@ -313,14 +331,13 @@ const Restaurant = ({ params }) => {
                       ))
                   ) : (
                     <>
-                      <div className="flex justify-between mb-2">
-                        <span>Monday - Friday:</span>
-                        <span>11:00 AM - 10:00 PM</span>
-                      </div>
-                      <div className="flex justify-between mb-2">
-                        <span>Saturday - Sunday:</span>
-                        <span>12:00 PM - 11:00 PM</span>
-                      </div>
+                      {profile?.openingHours?.map((item,index)=>(
+                      <div key={index} className="flex justify-between mb-2">
+                      <span>{item.day}</span>
+                       <span>{item.open} - {item.close}</span>
+                        </div>
+                      
+                      ))}
                     </>
                   )}
                 </div>
@@ -341,15 +358,17 @@ const Restaurant = ({ params }) => {
                     <>
                       <div className="flex items-center mb-3">
                         <LocationOn className="text-green-600 mr-3" />
-                        <span>123 Main St, Anytown, USA 12345</span>
+                        <p> {profile?.address?.street}</p>
+                        <p> {profile?.address?.state}</p>
+                        <p> {profile?.address?.country}</p>
                       </div>
                       <div className="flex items-center mb-3">
                         <Phone className="text-green-600 mr-3" />
-                        <span>555-123-4567</span>
+                        <span>{profile?.phone}</span>
                       </div>
                       <div className="flex items-center">
                         <Email className="text-green-600 mr-3" />
-                        <span>info@tastybites.com</span>
+                        <span>{profile?.email}</span>
                       </div>
                     </>
                   )}
@@ -360,7 +379,7 @@ const Restaurant = ({ params }) => {
 
           {/* Cart Section */}
           <div className="hidden lg:block border lg:w-1/4">
-            <div className="sticky top-4 bg-white rounded-lg shadow-lg p-6">
+            <div className="sticky top-4 bg-white rounded-lg  p-6">
               <h2 className="text-xl font-bold mb-4">Your Cart</h2>
               {/* cart items */}
               <CartContent />

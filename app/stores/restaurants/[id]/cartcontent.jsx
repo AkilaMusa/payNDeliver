@@ -2,6 +2,7 @@
 import CartItem from "./cartitem";
 import { useState, useEffect } from "react";
 import { useCart } from "../../../contex/cartcontex";
+import CartEmpty from "../../../components/cartempty";
 
 const CartContent = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -22,7 +23,7 @@ const CartContent = () => {
   }
 
   if (cart.length === 0) {
-    return <p className="text-gray-500">Your cart is empty.</p>;
+    return <CartEmpty/>
   }
 
   return (
