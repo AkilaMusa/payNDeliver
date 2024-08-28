@@ -11,6 +11,11 @@ const BusinessSchema = new mongoose.Schema({
     required: true, 
     trim: true 
   },
+  
+  image: {
+      type: String,
+      trim: true,
+    },
   description: { 
     type: String, 
     trim: true 

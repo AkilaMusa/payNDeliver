@@ -1,5 +1,13 @@
 "use client";
-import { Star, AccessTime, LocalDining, DirectionsCar, Phone, Email, LocationOn } from "@mui/icons-material";
+import {
+  Star,
+  AccessTime,
+  LocalDining,
+  DirectionsCar,
+  Phone,
+  Email,
+  LocationOn,
+} from "@mui/icons-material";
 import ProductCard from "../../../components/productscard";
 import CartEmpty from "../../../components/cartempty";
 import { useEffect, useState } from "react";
@@ -10,23 +18,50 @@ import { useCart } from "../../../contex/cartcontex";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CartItem from "../../../components/shoppingCart";
-import CartPage from "../../../cart/page";
 import CartContent from "./cartcontent";
 
 const Restaurant = ({ params }) => {
   const { id } = params;
+  const [profile, setprofile] = useState({
+    address: "",
+    cuisineType: "",
+    email: "",
+    image: "",
+    name: "",
+    openingHours: "",
+    phone: "",
+    description: "",
+  });
   const [loading, setLoading] = useState(true);
   const [cat, setCat] = useState("All");
   const { addToCart } = useCart();
 
-  const restaurant = restaurants.find((food) => parseInt(id) === food.id);
-  const prod = restaurant.foods.map(({ name, title, image, id, price }) => ({
-    name,
-    title,
-    image,
-    id,
-    price,
-  }));
+  // const restaurant = restaurants.find((food) => parseInt(id) === food.id);
+  // const prod = restaurants.foods.map(({ name, title, image, id, price }) => ({
+  //   name,
+  //   title,
+  //   image,
+  //   id,
+  //   price,
+  // }));
+
+  useEffect(() => {
+    const fetchbusiness = async () => {
+      const abortcontroller = new AbortController();
+      try {
+        setLoading(true);
+        const request = await fetch("/api/business", { signal });
+        if (!request.ok) {
+          throw new Error("error fetcing busines profile");
+        }
+        const data = await request.json();
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchbusiness();
+    return () => abortcontroller.abort;
+  }, []);
 
   const [data, setData] = useState(prod);
   const [det, setDet] = useState({
@@ -55,12 +90,6 @@ const Restaurant = ({ params }) => {
     if (dish.length === 0) return;
     setData(dish);
   };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-  }, []);
 
   const handleAddToCart = (product) => {
     addToCart(product);
@@ -96,7 +125,11 @@ const Restaurant = ({ params }) => {
                   {/* <img src="/images/imageplaceholder.png" className="w-20 h-20 object-cover" alt="" /> */}
                 </div>
               ) : (
-                <img src={restaurant.image} className="w-full h-full object-cover" alt={restaurant.name} />
+                <img
+                  src={restaurant.image}
+                  className="w-full h-full object-cover"
+                  alt={restaurant.name}
+                />
               )}
               {/* <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-full shadow-md flex items-center space-x-2">
                 <AccessTime className="text-green-600" fontSize="small" />
@@ -153,15 +186,25 @@ const Restaurant = ({ params }) => {
               <h2 className="text-2xl font-bold mb-4">Our Menu</h2>
               <div className="flex space-x-2 overflow-x-auto pb-4 mb-6">
                 {loading
-                  ? Array(6).fill().map((_, index) => (
-                      <div key={index} className="h-10 w-20 bg-gray-300 rounded-full animate-pulse flex-shrink-0"></div>
-                    ))
+                  ? Array(6)
+                      .fill()
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="h-10 w-20 bg-gray-300 rounded-full animate-pulse flex-shrink-0"
+                        ></div>
+                      ))
                   : [
                       <button
                         key="all"
-                        onClick={() => { setData(prod); setCat("All"); }}
+                        onClick={() => {
+                          setData(prod);
+                          setCat("All");
+                        }}
                         className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
-                          cat === "All" ? "bg-green-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                          cat === "All"
+                            ? "bg-green-600 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                         }`}
                       >
                         All
@@ -171,7 +214,9 @@ const Restaurant = ({ params }) => {
                           key={category}
                           onClick={() => handleDishes(category)}
                           className={`px-4 py-2 rounded-full flex-shrink-0 transition duration-300 ${
-                            category === cat ? "bg-green-600 text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                            category === cat
+                              ? "bg-green-600 text-white"
+                              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                           }`}
                         >
                           {category}
@@ -182,7 +227,9 @@ const Restaurant = ({ params }) => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {loading
-                  ? Array(4).fill().map((_, index) => <Productscardskeleton key={index} />)
+                  ? Array(4)
+                      .fill()
+                      .map((_, index) => <Productscardskeleton key={index} />)
                   : data.map(({ name, title, image, id, price }) => (
                       <ProductCard
                         key={id}
@@ -201,30 +248,52 @@ const Restaurant = ({ params }) => {
             <div className="mb-12">
               <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
               <div className="space-y-4">
-                {loading ? (
-                  Array(3).fill().map((_, index) => (
-                    <div key={index} className="bg-gray-100 p-4 rounded-lg animate-pulse">
-                      <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
-                      <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
-                      <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-                    </div>
-                  ))
-                ) : (
-                  [
-                    { name: "John D.", rating: 5, comment: "Absolutely delicious! The pizza was perfect and delivery was quick." },
-                    { name: "Sarah M.", rating: 4, comment: "Great food and service. Will order again!" },
-                    { name: "Mike R.", rating: 5, comment: "Best Italian food in town. Highly recommended!" }
-                  ].map((review, index) => (
-                    <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                      <div className="flex items-center mb-2">
-                        <Star className="text-yellow-500 mr-1" fontSize="small" />
-                        <span className="font-medium">{review.rating}</span>
-                        <span className="text-sm text-gray-600 ml-2">{review.name}</span>
+                {loading
+                  ? Array(3)
+                      .fill()
+                      .map((_, index) => (
+                        <div
+                          key={index}
+                          className="bg-gray-100 p-4 rounded-lg animate-pulse"
+                        >
+                          <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
+                          <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
+                          <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                        </div>
+                      ))
+                  : [
+                      {
+                        name: "John D.",
+                        rating: 5,
+                        comment:
+                          "Absolutely delicious! The pizza was perfect and delivery was quick.",
+                      },
+                      {
+                        name: "Sarah M.",
+                        rating: 4,
+                        comment: "Great food and service. Will order again!",
+                      },
+                      {
+                        name: "Mike R.",
+                        rating: 5,
+                        comment:
+                          "Best Italian food in town. Highly recommended!",
+                      },
+                    ].map((review, index) => (
+                      <div key={index} className="bg-gray-100 p-4 rounded-lg">
+                        <div className="flex items-center mb-2">
+                          <Star
+                            className="text-yellow-500 mr-1"
+                            fontSize="small"
+                          />
+                          <span className="font-medium">{review.rating}</span>
+                          <span className="text-sm text-gray-600 ml-2">
+                            {review.name}
+                          </span>
+                        </div>
+                        <p className="text-gray-700">{review.comment}</p>
                       </div>
-                      <p className="text-gray-700">{review.comment}</p>
-                    </div>
-                  ))
-                )}
+                    ))}
               </div>
             </div>
 
@@ -234,12 +303,14 @@ const Restaurant = ({ params }) => {
                 <h2 className="text-2xl font-bold mb-4">Opening Hours</h2>
                 <div className="bg-gray-100 p-4 rounded-lg">
                   {loading ? (
-                    Array(7).fill().map((_, index) => (
-                      <div key={index} className="flex justify-between mb-2">
-                        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-                        <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-                      </div>
-                    ))
+                    Array(7)
+                      .fill()
+                      .map((_, index) => (
+                        <div key={index} className="flex justify-between mb-2">
+                          <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                          <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                        </div>
+                      ))
                   ) : (
                     <>
                       <div className="flex justify-between mb-2">
@@ -258,12 +329,14 @@ const Restaurant = ({ params }) => {
                 <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
                 <div className="bg-gray-100 p-4 rounded-lg">
                   {loading ? (
-                    Array(3).fill().map((_, index) => (
-                      <div key={index} className="flex items-center mb-3">
-                        <div className="h-6 w-6 bg-gray-300 rounded-full mr-3"></div>
-                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                      </div>
-                    ))
+                    Array(3)
+                      .fill()
+                      .map((_, index) => (
+                        <div key={index} className="flex items-center mb-3">
+                          <div className="h-6 w-6 bg-gray-300 rounded-full mr-3"></div>
+                          <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                        </div>
+                      ))
                   ) : (
                     <>
                       <div className="flex items-center mb-3">
@@ -290,7 +363,7 @@ const Restaurant = ({ params }) => {
             <div className="sticky top-4 bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold mb-4">Your Cart</h2>
               {/* cart items */}
-              <CartContent/>
+              <CartContent />
             </div>
           </div>
         </div>

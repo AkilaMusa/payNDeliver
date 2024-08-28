@@ -41,3 +41,18 @@ export const POST = async(req) => {
         return NextResponse.json({ message: err.message }, { status: 500 })
     }
 }
+
+export const GET = async (req) => {
+    try {
+      await dbConnect();
+      const fetchBusiness = await businessmodel.find({});
+  
+      if (fetchBusiness.length === 0) {
+        return NextResponse.json({ message: "No businesses found!" }, { status: 404 });
+      }
+  
+      return NextResponse.json({ message: "Success!", data: fetchBusiness }, { status: 200 });
+    } catch (err) {
+      return NextResponse.json({ message: err.message }, { status: 500 });
+    }
+  };

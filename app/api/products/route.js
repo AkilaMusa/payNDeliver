@@ -38,3 +38,24 @@ export const POST = async (req, res) => {
         return NextResponse.json({ message: err.message }, { status: 500 });
     }
 };
+
+
+export const GET = async (req) => {
+    try {
+      await dbConnect();
+      const session = await getServerSession(authOptions);
+      if (!session) {
+        return NextResponse.json({ message: "Not authorized!" }, { status: 401 });
+      }
+  
+      const getBusinessId = await businessmodel.findOne({ ownerId: session.user.id });
+      if (!getBusinessId) {
+        return NextResponse.json({ message: "Cannot find products related to this business!" }, { status: 404 });
+      }
+  
+      const getProducts = await productsmodel.find({ businessId: getBusinessId._id });
+      return NextResponse.json({ message: "Success", data: getProducts }, { status: 200 });
+    } catch (err) {
+      return NextResponse.json({ message: err.message }, { status: 500 });
+    }
+  };
