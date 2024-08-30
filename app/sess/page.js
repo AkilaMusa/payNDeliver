@@ -1,5 +1,6 @@
 "use client"
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 const stuff = () => {
     const { data: session } = useSession();
     if(session){
@@ -7,6 +8,7 @@ const stuff = () => {
       console.log(session)
   
     }
+
     return (  
         <>
         <p>welcome: {session?.user?.email}</p>

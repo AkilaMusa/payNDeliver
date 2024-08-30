@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const BusinessSchema = new mongoose.Schema({
+const BusinessSchema = new mongoose.Schema(
+  {
   ownerId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'users', 
@@ -63,6 +64,7 @@ const BusinessSchema = new mongoose.Schema({
 }, {
   timestamps: true,
   collection: 'business'
-});
+}
+);
 
 export default mongoose.models.Business || mongoose.model('Business', BusinessSchema);

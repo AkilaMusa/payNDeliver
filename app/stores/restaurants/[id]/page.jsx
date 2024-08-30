@@ -9,16 +9,14 @@ import {
   LocationOn,
 } from "@mui/icons-material";
 import ProductCard from "../../../components/productscard";
-import CartEmpty from "../../../components/cartempty";
 import { useEffect, useState } from "react";
 import FoodDetailsModal from "../../../components/productdetails";
-import { restaurants } from "../../../data/data";
 import Productscardskeleton from "../../../components/loaders/productskeleton";
 import { useCart } from "../../../contex/cartcontex";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CartItem from "../../../components/shoppingCart";
 import CartContent from "./cartcontent";
+import Reviews from "./reviews";
 
 const Restaurant = ({ params }) => {
   const { id } = params;
@@ -26,48 +24,40 @@ const Restaurant = ({ params }) => {
   const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState("All");
   const { addToCart } = useCart();
-const [products,setProducts] =useState("")
-  // const restaurant = restaurants.find((food) => parseInt(id) === food.id);
-  // const prod = restaurants.foods.map(({ name, title, image, id, price }) => ({
-  //   name,
-  //   title,
-  //   image,
-  //   id,
-  //   price,
-  // }));
-
-  // const [data, setData] = useState(prod);
+  const [products, setProducts] = useState("");
   useEffect(() => {
     const abortController = new AbortController();
     const { signal } = abortController;
-  
+
     const fetchBusinessAndProducts = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch business data
         const businessResponse = await fetch(`/api/business/${id}`, { signal });
         if (!businessResponse.ok) {
           throw new Error("Error fetching business profile");
         }
         const businessData = await businessResponse.json();
-        console.log("business",businessData);
+        console.log("business", businessData);
         setprofile(businessData.data);
-  
+
         // Fetch products data
         if (businessData.data?._id) {
-          const productsResponse = await fetch(`/api/products/${businessData.data._id}`, { signal });
+          const productsResponse = await fetch(
+            `/api/products/${businessData.data._id}`,
+            { signal }
+          );
           if (!productsResponse.ok) {
             throw new Error("Error fetching products");
           }
           const productsData = await productsResponse.json();
-          console.log("products:",productsData);
-          // Assuming you have a state setter for products, e.g., setProducts
+          console.log("products:", productsData);
           setProducts(productsData.data);
         }
       } catch (err) {
-        if (err.name === 'AbortError') {
-          console.log('Fetch aborted');
+        if (err.name === "AbortError") {
+          console.log("Fetch aborted");
         } else {
           console.error(err);
         }
@@ -75,12 +65,11 @@ const [products,setProducts] =useState("")
         setLoading(false);
       }
     };
-  
+
     fetchBusinessAndProducts();
-  
+
     return () => abortController.abort();
   }, [id]);
-
 
   const [det, setDet] = useState({
     title: "",
@@ -136,11 +125,10 @@ const [products,setProducts] =useState("")
         <div className="lg:flex gap-8">
           <div className="w-full lg:w-3/4">
             {/* Hero Section */}
-            <div className="relative h-80 mb-6 rounded-xl overflow-hidden shadow-lg">
+            <div className="relative h-80 mb-6 rounded-xl overflow-hidden ">
               {loading ? (
                 <div className="h-full w-full bg-gray-300 animate-pulse flex items-center justify-center">
                   <div className="w-20 h-20"></div>
-                  {/* <img src="/images/imageplaceholder.png" className="w-20 h-20 object-cover" alt="" /> */}
                 </div>
               ) : (
                 <img
@@ -149,10 +137,6 @@ const [products,setProducts] =useState("")
                   alt={profile?.name}
                 />
               )}
-              {/* <div className="absolute bottom-4 left-4 bg-white px-3 py-2 rounded-full shadow-md flex items-center space-x-2">
-                <AccessTime className="text-green-600" fontSize="small" />
-                <span className="text-sm font-medium text-green-800">{restaurant.deliveryTime}</span>
-              </div> */}
             </div>
 
             {/* Restaurant Info */}
@@ -248,71 +232,26 @@ const [products,setProducts] =useState("")
                   ? Array(4)
                       .fill()
                       .map((_, index) => <Productscardskeleton key={index} />)
-                  : products && products?.map(({ name,description, image, _id, price }) => (
-                      <ProductCard
-                        key={_id}
-                        id={_id}
-                        image={image}
-                        title={name}
-                        dsc={description}
-                        price={price}
-                        onclick={() => details(_id)}
-                      />
-                    ))}
+                  : products &&
+                    products?.map(
+                      ({ name, description, image, _id, price }) => (
+                        <ProductCard
+                          key={_id}
+                          id={_id}
+                          image={image}
+                          title={name}
+                          dsc={description}
+                          price={price}
+                          onclick={() => details(_id)}
+                        />
+                      )
+                    )}
               </div>
             </div>
 
             {/* Customer Reviews Section */}
             <div className="mb-12">
-              <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
-              <div className="space-y-4">
-                {loading
-                  ? Array(3)
-                      .fill()
-                      .map((_, index) => (
-                        <div
-                          key={index}
-                          className="bg-gray-100 p-4 rounded-lg animate-pulse"
-                        >
-                          <div className="h-4 bg-gray-300 rounded w-1/4 mb-2"></div>
-                          <div className="h-3 bg-gray-300 rounded w-3/4 mb-2"></div>
-                          <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-                        </div>
-                      ))
-                  : [
-                      {
-                        name: "John D.",
-                        rating: 5,
-                        comment:
-                          "Absolutely delicious! The pizza was perfect and delivery was quick.",
-                      },
-                      {
-                        name: "Sarah M.",
-                        rating: 4,
-                        comment: "Great food and service. Will order again!",
-                      },
-                      {
-                        name: "Mike R.",
-                        rating: 5,
-                        comment:
-                          "Best Italian food in town. Highly recommended!",
-                      },
-                    ].map((review, index) => (
-                      <div key={index} className="bg-gray-100 p-4 rounded-lg">
-                        <div className="flex items-center mb-2">
-                          <Star
-                            className="text-yellow-500 mr-1"
-                            fontSize="small"
-                          />
-                          <span className="font-medium">{review.rating}</span>
-                          <span className="text-sm text-gray-600 ml-2">
-                            {review.name}
-                          </span>
-                        </div>
-                        <p className="text-gray-700">{review.comment}</p>
-                      </div>
-                    ))}
-              </div>
+              {profile ? <Reviews businessId={profile?._id} /> : ""}
             </div>
 
             {/* Opening Hours and Contact Info */}
@@ -331,12 +270,13 @@ const [products,setProducts] =useState("")
                       ))
                   ) : (
                     <>
-                      {profile?.openingHours?.map((item,index)=>(
-                      <div key={index} className="flex justify-between mb-2">
-                      <span>{item.day}</span>
-                       <span>{item.open} - {item.close}</span>
+                      {profile?.openingHours?.map((item, index) => (
+                        <div key={index} className="flex justify-between mb-2">
+                          <span>{item.day}</span>
+                          <span>
+                            {item.open} - {item.close}
+                          </span>
                         </div>
-                      
                       ))}
                     </>
                   )}

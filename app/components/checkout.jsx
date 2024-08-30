@@ -17,6 +17,69 @@ const CheckoutPage = () => {
     cvv: "",
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const dummyOrderData = {
+    customerId: "66ce3dfdb9a235324ccad373",
+    businessId: "66ce3f187780c0a2e4b23987",
+    orderItems: [
+      {
+        productId: "66cee0d29269b6478cdc1d0c",
+        quantity: 2,
+        price: 29.99,
+        name: "Premium Widget",
+        subtotal: 59.98,
+      },
+    ],
+    totalAmount: 109.97,
+    status: "Processing",
+    shippingAddress: {
+      street: "123 Test Street",
+      city: "Testville",
+      state: "Testylvania",
+      postalCode: "12345",
+      country: "Testland",
+    },
+    paymentMethod: "Card",
+    paymentStatus: "Paid",
+    paymentIntentId: "pi_" + Math.random().toString(36).substr(2, 9),
+    paymentDate: new Date(),
+    orderDate: new Date(),
+    deliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    trackingNumber: "TRK" + Math.random().toString(36).substr(2, 9),
+    notes: "This is a test order.",
+  };
+
+  useEffect(() => {
+    const abortcontroller = new AbortController();
+    const { signal } = abortcontroller;
+
+    const createOrder = async () => {
+      try {
+        const response = await fetch("/api/orders", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dummyOrderData),
+          signal,
+        });
+
+        if (!response.ok) {
+          throw new Error("Error posting data!");
+        }
+
+        const data = await response.json();
+        console.log("Order created successfully:", data);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.log(err.message);
+        }
+      }
+    };
+
+    //  createOrder();
+
+    return () => abortcontroller.abort();
+  }, []);
 
   const [cartItems] = useState([
     { id: 1, name: "Product 1", price: 19.99, quantity: 1 },
