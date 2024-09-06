@@ -1,10 +1,14 @@
-"use client";
-import { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Star } from "lucide-react";
 import { useSession } from "next-auth/react";
 import CustomerReviewSkeleton from "./reviewsskeleton";
 
-const StarRating = ({ rating, onRatingChange, disabled = false }) => {
+const StarRating = ({
+  rating,
+  onRatingChange,
+  disabled = false,
+  size = 16,
+}) => {
   const [hoveredRating, setHoveredRating] = useState(0);
 
   return (
@@ -21,7 +25,7 @@ const StarRating = ({ rating, onRatingChange, disabled = false }) => {
           aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`}
         >
           <Star
-            size={24}
+            size={size}
             className={`${
               star <= (hoveredRating || rating)
                 ? "text-yellow-400 fill-yellow-400"
@@ -135,15 +139,25 @@ const Reviews = ({ businessId }) => {
         <div className="space-y-4">
           {reviews.map(
             ({ customerName, reviewDate, comment, rating }, index) => (
-              <div key={index} className="bg-gray-100 p-6 rounded-lg shadow-sm">
-                <h3 className="text-xl font-semibold text-gray-800 mb-1">
-                  {customerName}
-                </h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Posted on {new Date(reviewDate).toLocaleDateString()}
-                </p>
-                <StarRating rating={rating} disabled={true} />
-                <p className="text-gray-700 mt-4">{comment}</p>
+              <div key={index} className="bg-gray-50 p-2 rounded-md shadow-sm">
+                <div className="flex items-center mb-2">
+                  <img
+                    src="/images/profile/profile.jpg"
+                    alt="User Avatar"
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <div>
+                    <h3 className="text-gray-800">{customerName}</h3>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <StarRating rating={rating} disabled={true} size={12} />
+
+                  <p className="text-sm ms-2 text-gray-500">
+                    {new Date(reviewDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <p className="text-gray-700 mt-1">{comment}</p>
               </div>
             )
           )}
@@ -152,15 +166,15 @@ const Reviews = ({ businessId }) => {
 
       <form
         onSubmit={handleSubmit}
-        className="mt-8 bg-white p-4 rounded-lg shadow-sm"
+        className="mt-8 bg-white rounded-lg shadow-sm"
       >
-        <h3 className="text-xl font-bold mb-4">Leave a Review</h3>
         <div className="mb-4">
           <StarRating
             rating={newReview.rating}
             onRatingChange={(rating) =>
               setNewReview((prev) => ({ ...prev, rating }))
             }
+            size={24}
           />
         </div>
 

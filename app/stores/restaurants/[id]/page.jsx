@@ -17,14 +17,19 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CartContent from "./cartcontent";
 import Reviews from "./reviews";
+import BackToTopButton from "./backtotop";
+import Header from "../../../components/header";
+import { useSession } from "next-auth/react";
 
 const Restaurant = ({ params }) => {
   const { id } = params;
   const [profile, setprofile] = useState("");
   const [loading, setLoading] = useState(false);
   const [cat, setCat] = useState("All");
-  const { addToCart } = useCart();
+  const { addToCart, saveCartToDatabase } = useCart();
   const [products, setProducts] = useState("");
+  const { data: session } = useSession();
+  console.log(session?.user.id);
   useEffect(() => {
     const abortController = new AbortController();
     const { signal } = abortController;
@@ -53,7 +58,10 @@ const Restaurant = ({ params }) => {
           }
           const productsData = await productsResponse.json();
           console.log("products:", productsData);
-          setProducts(productsData.data);
+          setProducts({
+            products: productsData.data,
+            userId: session?.user?.id,
+          });
         }
       } catch (err) {
         if (err.name === "AbortError") {
@@ -100,11 +108,15 @@ const Restaurant = ({ params }) => {
 
   const handleAddToCart = (product) => {
     addToCart(product);
+    saveCartToDatabase(product);
     toast.success("Added item to cart");
   };
 
   return (
     <>
+      <div className="mb-4">
+        <Header />
+      </div>
       <ToastContainer position="top-right" autoClose={3000} />
 
       {isModalOpen && (
@@ -158,24 +170,24 @@ const Restaurant = ({ params }) => {
                 )}
               </div>
 
-              <div className="flex space-x-4 mb-6">
+              {/* <div className="flex space-x-4 mb-6">
                 <button className="flex-1 bg-green-600 text-white py-2 px-4 rounded-full hover:bg-green-700 transition duration-300 flex items-center justify-center">
                   <LocalDining className="mr-2" /> Deliver now
                 </button>
                 <button className="flex-1 border border-green-600 text-green-600 py-2 px-4 rounded-full hover:bg-green-50 transition duration-300 flex items-center justify-center">
                   <DirectionsCar className="mr-2" /> Pickup
                 </button>
-              </div>
+              </div> */}
 
               <div className="flex justify-between text-sm text-gray-600 mb-6">
                 <div>
                   <p className="font-semibold text-gray-800">Opening time</p>
                   <p>{"9:00am-12:00am"}</p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="font-semibold text-gray-800">Min Order</p>
                   <p>$0</p>
-                </div>
+                </div> */}
                 <div>
                   <p className="font-semibold text-gray-800">Cuisine</p>
                   <p className="text-green-600">African</p>
@@ -297,17 +309,15 @@ const Restaurant = ({ params }) => {
                   ) : (
                     <>
                       <div className="flex items-center mb-3">
-                        <LocationOn className="text-green-600 mr-3" />
-                        <p> {profile?.address?.street}</p>
-                        <p> {profile?.address?.state}</p>
-                        <p> {profile?.address?.country}</p>
+                        <LocationOn className="text-green-600 mr-3" size={20} />
+                        <p>{`${profile?.address?.street}, ${profile?.address?.state}, ${profile?.address?.country}`}</p>
                       </div>
                       <div className="flex items-center mb-3">
-                        <Phone className="text-green-600 mr-3" />
+                        <Phone className="text-green-600 mr-3" size={20} />
                         <span>{profile?.phone}</span>
                       </div>
                       <div className="flex items-center">
-                        <Email className="text-green-600 mr-3" />
+                        <Email className="text-green-600 mr-3" size={20} />
                         <span>{profile?.email}</span>
                       </div>
                     </>
@@ -327,6 +337,7 @@ const Restaurant = ({ params }) => {
           </div>
         </div>
       </div>
+      <BackToTopButton />
     </>
   );
 };

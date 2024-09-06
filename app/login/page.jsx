@@ -1,11 +1,20 @@
-import LoginPopup from "../components/Login";
+"use client";
+import LoginModal from "../components/Login";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+export default function LoginPage() {
+  const router = useRouter();
 
-const SignIn = () => {
-  return (
-    <>
-      <LoginPopup />
-    </>
-  );
-};
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
 
-export default SignIn;
+  const handleClose = () => {
+    router.back();
+  };
+
+  return <LoginModal isOpen={true} onClose={handleClose} />;
+}

@@ -80,7 +80,7 @@ const BusinessProfile = () => {
               </div>
             </div>
           </div>
-          {/* Add more product cards here */}
+
         </div>
       </section>
 
@@ -118,7 +118,6 @@ const BusinessProfile = () => {
             <span>John D.</span> • <time>May 15, 2023</time>
           </div>
         </div>
-        {/* Add more reviews here */}
       </section>
     </main>
   );

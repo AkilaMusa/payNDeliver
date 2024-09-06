@@ -7,7 +7,7 @@ const ShopCard = ({ image, title, deliverytime, rating, categories, id }) => {
   return (
     <>
       <Link href={`stores/restaurants/${id}`}>
-        <div className="hover:shadow-lg transition-shadow duration-300 p-2 rounded-xl">
+        <div className="hover:shadow-lg transition-shadow duration-300 hover:p-2 rounded-xl">
           <div className="relative w-full rounded-lg overflow-hidden">
             <div className="relative">
               <img src={image} className="w-full h-48 object-cover" />
@@ -26,9 +26,9 @@ const ShopCard = ({ image, title, deliverytime, rating, categories, id }) => {
             </div>
             <div>
               <div className="time flex items-center text-sm my-2">
-                <span>
+                {/* <span>
                   <AccessTimeIcon className="text-sm text-green-800" />
-                </span>
+                </span> */}
                 <span className="text-gray-400 px-1">{deliverytime}</span>
               </div>
               <div className="text-green-700">

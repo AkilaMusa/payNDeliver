@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { AddCircleOutline, RemoveCircleOutline } from "@mui/icons-material";
-import Link from "next/link";
-import { useCart } from "../contex/cartcontex";
+import { useRouter } from "next/navigation";
 const FoodDetailsModal = ({
   title,
   price,
@@ -10,18 +10,42 @@ const FoodDetailsModal = ({
   dsc,
   image,
   addToCart,
+  saveCartToDatabase,
   id,
 }) => {
   const [quantity, setQuantity] = useState(1);
-  // const { addToCart } = useCart();
-  console.log(quantity);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const handleAddToCart = () => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+    addToCart({
+      title,
+      price,
+      dsc,
+      image,
+      id,
+      quantity,
+    });
+    saveCartToDatabase({
+      title,
+      price,
+      dsc,
+      image,
+      id,
+      quantity,
 
+    })
+
+  };
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
   const decreaseQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md overflow-h_idden">
         <div className="relative h-64">
           <img src={image} alt={title} className="w-full h-full object-cover" />
           <div className="rounded-full" onClick={onClose}>
@@ -39,7 +63,7 @@ const FoodDetailsModal = ({
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeW_idth={2}
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -73,16 +97,7 @@ const FoodDetailsModal = ({
           </div>
           {/* <Link href={"/checkout"}> */}
           <button
-            onClick={() =>
-              addToCart({
-                title,
-                price,
-                dsc,
-                image,
-                id,
-                quantity,
-              })
-            }
+            onClick={handleAddToCart}
             className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold text-lg hover:bg-green-600 transition-colors"
           >
             Place Order - ${(price * quantity).toFixed(2)}

@@ -316,7 +316,7 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      <footer className="bg-gray-800 text-white py-12">
+      {/* <footer className="bg-gray-800 text-white py-12">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -352,7 +352,7 @@ export default function LandingPage() {
             © {new Date().getFullYear()} PayNDeliver. All rights reserved.
           </div>
         </div>
-      </footer>
+      </footer> */}
 
       {/* Add a floating scroll-to-top button */}
       <ScrollToTopButton />
